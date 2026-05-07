@@ -39,7 +39,7 @@ def create_product(
         }
     }
 
-@app.get("/products")
+@app.get("/products", summary="Get All Products")
 def get_products(db: Session = Depends(get_db)):
     
     #Fetch all products
