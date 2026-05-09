@@ -3,14 +3,14 @@ from sqlalchemy.orm import Session
 
 from app.models.product import Product
 from app.db.database import get_db
-from app.schemas.product_schema import ProductCreate
+from app.schemas.product_schema import ProductCreate, ProductResponse
 
 router = APIRouter(
     prefix="/products",
     tags=["Products"]
 )
 
-@router.post("/")
+@router.post("/", response_model=ProductResponse)
 def create_product(
     product: ProductCreate,
     db: Session = Depends(get_db)
@@ -27,17 +27,9 @@ def create_product(
     db.commit()
     db.refresh(new_product)
 
-    return {
-        "message": "Product created",
-        "product": {
-            "id": new_product.id,
-            "name": new_product.name,
-            "price": new_product.price,
-            "stock": new_product.stock
-        }
-    }
+    return new_product
 
-@router.get("/", summary="Get All Products")
+@router.get("/", response_model=list[ProductResponse], summary="Get All Products")
 def get_products(db: Session = Depends(get_db)):
     
     #Fetch all products
@@ -45,7 +37,7 @@ def get_products(db: Session = Depends(get_db)):
 
     return products
 
-@router.get("/{product_id}")
+@router.get("/{product_id}", response_model=ProductResponse)
 def get_single_product(
     product_id: int,
     db: Session = Depends(get_db)
@@ -59,7 +51,7 @@ def get_single_product(
     
     return product
 
-@router.put("/{product_id}")
+@router.put("/{product_id}", response_model=ProductResponse)
 def update_product(
     product_id: int,
     updated_product: ProductCreate,
@@ -81,10 +73,7 @@ def update_product(
     db.commit()
     db.refresh(product)
 
-    return {
-        "message": "Product updated",
-        "product": product
-    }
+    return product
 
 @router.delete("/{product_id}")
 def delete_product(

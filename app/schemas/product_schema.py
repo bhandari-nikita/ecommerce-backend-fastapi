@@ -4,3 +4,13 @@ class ProductCreate(BaseModel):
     name: str
     price: float
     stock: int
+
+class ProductResponse(BaseModel):
+    id: int
+    name: str
+    price: float
+    stock: int
+
+    class Config:
+        # Allows Pydantic to convert SQLAlchemy objects into JSON response
+        from_attributes = True
