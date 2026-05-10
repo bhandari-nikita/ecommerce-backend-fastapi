@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.models.product import Product
 from app.db.database import get_db
 from app.schemas.product_schema import ProductCreate, ProductResponse
+from app.utils.oauth2 import get_current_user
 
 router = APIRouter(
     prefix="/products",
@@ -30,8 +31,10 @@ def create_product(
     return new_product
 
 @router.get("/", response_model=list[ProductResponse], summary="Get All Products")
-def get_products(db: Session = Depends(get_db)):
-    
+def get_products(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):  
     #Fetch all products
     products = db.query(Product).all()
 
