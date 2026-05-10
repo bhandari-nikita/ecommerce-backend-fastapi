@@ -13,6 +13,8 @@ from app.utils.security import (
     verify_password
     )
 
+from app.utils.jwt_handler import create_access_token
+
 router = APIRouter(
     prefix="/users",
     tags=["Users"] # Grouping routes in Swagger documentation. Folders/categories for APIs in docs
@@ -83,7 +85,15 @@ def login_user(
             detail="Invalid email or password"
         )
 
+    #Generate JWT token for authenticated user
+    access_token = create_access_token(
+        data = {
+            "sub": existing_user.email      #sub means suject - the user identity stored in token payload
+        }
+    )
+
     return {
-        "message": "Login successful"
+        "access_token": access_token,
+        "token_type": "bearer"   #Indicates the type of token being returned, in this case a Bearer token which is a common type of access token used in OAuth2 authentication.
     }
 
