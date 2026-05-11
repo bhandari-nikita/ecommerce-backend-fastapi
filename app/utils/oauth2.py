@@ -41,6 +41,19 @@ def get_current_user(
     return user
 
 
+# Check if current user is admin
+def admin_only(
+        current_user = Depends(get_current_user)
+):
+    #If user is not admin
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=403,
+            detail="Admin access required"
+        )
+    return current_user
+
+
 
 
 

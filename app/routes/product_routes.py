@@ -4,7 +4,10 @@ from sqlalchemy.orm import Session
 from app.models.product import Product
 from app.db.database import get_db
 from app.schemas.product_schema import ProductCreate, ProductResponse
-from app.utils.oauth2 import get_current_user
+from app.utils.oauth2 import (
+    get_current_user,
+    admin_only
+)
 
 router = APIRouter(
     prefix="/products",
@@ -14,7 +17,8 @@ router = APIRouter(
 @router.post("/", response_model=ProductResponse)
 def create_product(
     product: ProductCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(admin_only)
 ):
     # Create new product instance here product.name, product.price, product.stock represents the data sent in the request body and validated by the ProductCreate schema
     # while name, price, stock are the columns in the products table in the database
@@ -58,7 +62,8 @@ def get_single_product(
 def update_product(
     product_id: int,
     updated_product: ProductCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(admin_only)
 ):
     
     # Find existing product
@@ -81,7 +86,8 @@ def update_product(
 @router.delete("/{product_id}")
 def delete_product(
     product_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(admin_only)
 ):
     product = db.query(Product).filter(Product.id == product_id).first()
     
