@@ -1,12 +1,7 @@
 # Import required SQLAlchemy tools
 from sqlalchemy import Column, Integer, String, Float
 
-# Import base class for models
-from sqlalchemy.orm import declarative_base
-
-
-# Create base class
-Base = declarative_base()
+from app.db.database import Base
 
 # Product table model
 class Product(Base):

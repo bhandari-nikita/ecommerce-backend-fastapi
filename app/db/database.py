@@ -22,9 +22,5 @@ def get_db():
     finally:
         db.close()
 
-from app.models.product import Product
-from app.models.user import User
 
-# Create all tables from models
-Base.metadata.create_all(bind=engine)
 
