@@ -63,3 +63,31 @@ def add_to_cart(
         "message": "Item added to cart",
         "cart_item": new_cart_item
     }
+
+@router.delete("/{cart_item_id}")
+def remove_from_cart(
+    cart_item_id: int,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+
+    # Find cart item belonging to current user
+    cart_item = db.query(Cart).filter(
+        Cart.id == cart_item_id,
+        Cart.user_id == current_user.id
+    ).first()
+
+    # If item not found
+    if not cart_item:
+        raise HTTPException(
+            status_code=404,
+            detail="Cart item not found"
+        )
+
+    # Delete cart item
+    db.delete(cart_item)
+    db.commit()
+
+    return {
+        "message": "Item removed from cart"
+    }
