@@ -37,10 +37,13 @@ def create_product(
 @router.get("/", response_model=list[ProductResponse], summary="Get All Products")
 def get_products(
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user),
+    search: str =""  # default empty string because if user gives no search query, return all products because "%" matches everything.
 ):  
-    #Fetch all products
-    products = db.query(Product).all()
+    #Fetch all products based on search
+    products = db.query(Product).filter(
+        Product.name.ilike(f"%{search}%")  # ilike is case-insensitive search, % is wildcard for any characters before or after the search term
+    ).all()
 
     return products
 
