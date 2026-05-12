@@ -1,7 +1,13 @@
+import os
+
+from dotenv import load_dotenv
+
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
 
-SECRET_KEY = "mysecretkey"  # Secret key used to sign JWT tokens
+load_dotenv()
+
+SECRET_KEY = os.getenv("SECRET_KEY")  # Secret key used to sign JWT tokens
 ALGORITHM = "HS256"  # Algorithm used for token signing
 ACCESS_TOKEN_EXPIRE_MINUTES = 30  # Token expiry time in minutes
 
